@@ -2,3 +2,7 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Source decks (keep off the public site)
+*.pdf
+Superyou deck (1).png
