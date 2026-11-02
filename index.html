@@ -2801,11 +2801,12 @@
             <p class="form-err" id="formErr" hidden></p>
             <button class="btn btn--light" type="submit">Prepare my brief <span class="ar">↗</span></button>
             <div class="brief" id="brief" hidden>
-              <p style="font-weight:500">Your brief is ready. Send it on WhatsApp, or copy it.</p>
+              <p style="font-weight:500">Your brief is ready. Send it via WhatsApp or email.</p>
               <pre id="briefTxt"></pre>
-              <div class="row"><a class="btn btn--light" id="waS" href="#" target="_blank" rel="noopener">Send to
-                  Samvedh</a><a class="btn btn--light" id="waA" href="#" target="_blank" rel="noopener">Send to
-                  Arnav</a><button class="cbtn" type="button" id="copyBtn">Copy brief</button></div>
+              <div class="row">
+                <a class="btn btn--light" id="waBtn" href="#" target="_blank" rel="noopener">Create WhatsApp message <span class="ar">↗</span></a>
+                <a class="btn btn--light" id="mailBtn" href="#">Send email <span class="ar">↗</span></a>
+              </div>
             </div>
           </form>
           <div class="direct">
@@ -3042,17 +3043,15 @@
         const name = $('#f-name').value.trim(), prob = $('#f-prob').value.trim();
         if (!name || !prob) { err.textContent = 'Add your name and a line about the problem, so we know where to start.'; err.hidden = false; return; }
         err.hidden = true;
-        const txt = `Hi MCG,\n\nName: ${name}\nCompany: ${$('#f-org').value.trim() || 'n/a'}\nStage: ${$('#f-stage').value}\nTimeline: ${$('#f-time').value}\n\nWhat's going on:\n${prob}\n`;
+        const org = $('#f-org').value.trim();
+        const stage = $('#f-stage').value;
+        const time = $('#f-time').value;
+        const txt = `Hi MCG,\n\nName: ${name}\nCompany: ${org || 'n/a'}\nStage: ${stage}\nTimeline: ${time}\n\nWhat's going on:\n${prob}\n`;
         $('#briefTxt').textContent = txt;
-        $('#waS').href = `https://wa.me/919632828675?text=${encodeURIComponent(txt)}`;
-        $('#waA').href = `https://wa.me/917892875698?text=${encodeURIComponent(txt)}`;
+        $('#waBtn').href = `https://wa.me/?text=${encodeURIComponent(txt)}`;
+        const subject = org ? `Project Brief: ${name} (${org})` : `Project Brief: ${name}`;
+        $('#mailBtn').href = `mailto:arnav.samahith@gmail.com,samvedhkm@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(txt)}`;
         out.hidden = false; out.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' });
-      });
-      $('#copyBtn').addEventListener('click', () => {
-        const t = $('#briefTxt').textContent, b = $('#copyBtn');
-        const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy brief', 1800); };
-        const sel = () => { const r = document.createRange(); r.selectNodeContents($('#briefTxt')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected, press Ctrl+C'; };
-        try { navigator.clipboard.writeText(t).then(done).catch(sel); } catch (e) { sel(); }
       });
     })();
 
